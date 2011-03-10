@@ -1,5 +1,20 @@
+body {
+  background: #F6F6F6;
+}
+
+h1, h2, h3, h4, h5, h6, embed, object, svg {
+  font-family: LeagueGothic, Impact, sans-serif;
+  font-weight: normal;
+  margin-bottom: 16px;
+}
+
+h3 {
+  color: #666666;
+  margin-bottom: 3px;
+}
+
 div.chart {
-  width: 250px;
+  width: 500px;
   height: 150px;
   margin: 5px auto 0px auto;
 }

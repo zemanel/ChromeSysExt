@@ -1,9 +1,10 @@
 dojo.require("dojox.charting.Chart2D");
 dojo.require("dojox.charting.themes.PlotKit.blue");
-
-
-makeCharts = function() {
-                var chart1 = new dojox.charting.Chart2D("simplechart");
+dojo.require("dojo.data.ItemFileReadStore");
+dojo.require("dijit.form.Button");
+makeCharts = function(node) {
+                var chart1 = new dojox.charting.Chart2D(node);
+                
                 chart1.setTheme(dojox.charting.themes.PlotKit.blue);
                 
                 chart1.addPlot("default", {
@@ -27,19 +28,33 @@ chrome.experimental.processes.onUpdated.addListener(function(processes) {
 
 
 function getAllTabsInWindow() {
+  // Get all tabs of the current window
   chrome.tabs.getAllInWindow(null, function(tabs){
-    console.debug(tabs);
-    // Display tab in list if it is in the same process
+    //console.debug(tabs);
+    var tabList = {
+      'identifier': 'processID',
+      'label': 'tabTitle',
+      'items': []
+    };
+    // Iterate tabs to build data model
     tabs.forEach(function(tab) {
+      // Get process for each tab and build initial data model
       chrome.experimental.processes.getProcessIdForTab(tab.id, function(pid){
           console.log(tab, pid);
+          tabList.items.push({
+            'processID': pid,
+            'tabTitle': tab.title,
+          });
       });
     });
+    console.debug(tabList);
   });
 }
 
 dojo.ready(function() {
-  makeCharts();
+  makeCharts("simplechart");
+    makeCharts("simplechart2");
+      makeCharts("simplechart3");
   console.debug("--- ready ----");
   
   getAllTabsInWindow();
