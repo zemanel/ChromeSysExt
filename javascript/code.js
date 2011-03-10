@@ -1,6 +1,11 @@
 dojo.require("dojox.charting.Chart2D");
+dojo.require("dojox.charting.themes.PlotKit.blue");
+
+
 makeCharts = function() {
                 var chart1 = new dojox.charting.Chart2D("simplechart");
+                chart1.setTheme(dojox.charting.themes.PlotKit.blue);
+                
                 chart1.addPlot("default", {
                     type: "Lines"
                 });
@@ -9,6 +14,8 @@ makeCharts = function() {
                     vertical: true
                 });
                 chart1.addSeries("Series 1", [1, 2, 2, 3, 4, 5, 5, 7]);
+                chart1.addSeries("Series 2", [11, 22, 22, 33, 44, 54, 54, 74]);
+                
                 chart1.render();
             };
 
