@@ -8,6 +8,7 @@
   },
   "permissions": [
       "ajax.googleapis.com",
+      "experimental",
       "tabs"
   ]
 }
