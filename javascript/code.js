@@ -50,31 +50,54 @@ function getAllTabsInWindow(datastore, callback) {
 }
 // summary:
 //  initialize datastore and create charts
-function setupCharts(tabsAndProcesses) {
-  var initialData = {
-    'identifier': 'processID',
-    'idAttribute': 'processID',
-    'label': 'tabTitle',
-    'items': []
-  };
-  var datastore = new dojo.data.ItemFileWriteStore({data: initialData});
-  // fill datastore items
-  console.debug(tabsAndProcesses[0]);
-  for(var i=0; i<tabsAndProcesses.length; i++){
-    console.debug(tabsAndProcesses[i]);
-  }
-  
-  dojo.forEach(tabsAndProcesses, function(obj){
-    
-    datastore.newItem({
-      'processID'   : obj.processId,
-      'tabTitle'    : obj.tab.tabTitle,
-      'memory'      : [],
-      'cpu'         : [],
-      'network'     : []
-    });
-  });  
+function setupCharts(datastore) {
+  var cpuChart = new dojox.charting.DataChart("cpuChart",{
+    //displayRange:20,
+    yaxis: {to: 10, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true,natural:true},
+    type: dojox.charting.plot2d.Lines
+  }).setStore(datastore, {processID:"*"}, "memory");
 }
+
+// summary:
+// 
+function _updateStatProperty(datastore, item, property, value) {
+  var oldValue = datastore.getValues(item, property);
+  oldValue.push(value);
+  newValue = oldValue.slice(0, 10);
+  console.dir(newValue);
+  datastore.setValues(item, property, newValue);
+}
+
+// summary:
+// 
+function _onUpdated(processes) {
+  //console.debug(processes);
+  //debugDS(datastore);
+  var process;
+  for (pid in processes) {
+    //console.debug(processes[pid]);
+    process = processes[pid];
+    datastore.fetchItemByIdentity({
+      identity: pid,
+      onItem: function(item) {
+        if(datastore.isItem(item)){
+          //console.debug("Got item", item);
+          _updateStatProperty(datastore, item, 'cpu', process.cpu);
+          _updateStatProperty(datastore, item, 'memory', process.memory);
+          _updateStatProperty(datastore, item, 'network', process.network);
+          console.debug(item.cpu);
+        } else {
+          //console.error("item is not datastore item:", item);
+        }
+      },
+      onError: function(error) {
+        //console.error("Error fetching item by id:", error);
+      }
+     });
+  };
+}
+
+var datastore; // FIXME: global (on the run atm)
 
 // summary:
 //  execute on page loaded
@@ -86,10 +109,14 @@ dojo.ready(function() {
       'label': 'tabTitle',
       'items': []
     };
-  var datastore = new dojo.data.ItemFileWriteStore({data: initialData});
+  datastore = new dojo.data.ItemFileWriteStore({data: initialData});
   //, setupCharts
   getAllTabsInWindow(datastore, function(){
-    debugDS(datastore);  
+    //debugDS(datastore);
+    // Setup the charts
+    setupCharts(datastore);
+    // Start drawing 2xRainbows
+    chrome.experimental.processes.onUpdated.addListener(_onUpdated);
   });
   
 });
