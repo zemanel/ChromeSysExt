@@ -4,6 +4,7 @@ dojo.require("dojox.charting.themes.PlotKit.blue");
 dojo.require("dojox.charting.DataSeries");
 dojo.require("dojox.charting.axis2d.Default");
 dojo.require("dojox.charting.plot2d.Lines");
+dojo.require("dojox.charting.widget.Legend");
 
 function debugDS(datastore) {
   var kwArgs = {
@@ -33,7 +34,8 @@ function getAllTabsInWindow(datastore, callback) {
           datastore.newItem({
             'processID'   : processId,
             'tabTitle'    : tab.tabTitle,
-            'memory'      : [],
+            'privateMemory'      : [],
+            'sharedMemory'      : [],
             'cpu'         : [],
             'network'     : []
           });          
@@ -51,19 +53,27 @@ function getAllTabsInWindow(datastore, callback) {
 // summary:
 //  initialize datastore and create charts
 function setupCharts(datastore) {
-  var memoryChart = new dojox.charting.DataChart("memoryChart",{
+  var privateMemory = new dojox.charting.DataChart("privateMemoryChart",{
     //displayRange:20,
-    title: "Memory",
-    yaxis: {to: 10, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true,natural:true},
+    title: "Private Memory",
+    yaxis: {to: 1, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true,natural:true},
     type: dojox.charting.plot2d.Lines
-  }).setStore(datastore, {processID:"*"}, "memory");
+  }).setStore(datastore, {processID:"*"}, "privateMemory");
+  
+  var sharedMemory = new dojox.charting.DataChart("sharedMemoryChart",{
+    //displayRange:20,
+    title: "Shared Memory",
+    yaxis: {to: 1, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true,natural:true},
+    type: dojox.charting.plot2d.Lines
+  }).setStore(datastore, {processID:"*"}, "sharedMemory");
   
   var cpuChart = new dojox.charting.DataChart("cpuChart",{
     //displayRange:20,
     title: "CPU",
-    yaxis: {to: 100, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true,natural:true},
+    yaxis: {to: 1, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true,natural:true},
     type: dojox.charting.plot2d.Lines
   }).setStore(datastore, {processID:"*"}, "cpu");
+  legend = new dojox.charting.widget.Legend({chart: cpuChart}, "legend");
   
   var networkChart = new dojox.charting.DataChart("networkChart",{
     //displayRange:20,
@@ -75,12 +85,14 @@ function setupCharts(datastore) {
 }
 
 // summary:
-// 
+// updates a stat property on a datastore item
 function _updateStatProperty(datastore, item, property, value) {
-  var oldValue = datastore.getValues(item, property);
+  var newValue, oldValue = datastore.getValues(item, property);
   oldValue.push(value);
-  //newValue = oldValue.slice(0, 10);
   newValue = oldValue;
+  if (newValue.length>10) {
+    newValue.shift();
+  }
   console.dir(newValue);
   datastore.setValues(item, property, newValue);  
 }
@@ -100,9 +112,9 @@ function _onUpdated(processes) {
         if(datastore.isItem(item)){
           //console.debug("Got item", item);
           _updateStatProperty(datastore, item, 'cpu', process.cpu);
-          _updateStatProperty(datastore, item, 'memory', process.memory);
+          _updateStatProperty(datastore, item, 'privateMemory', process.privateMemory);
+          _updateStatProperty(datastore, item, 'sharedMemory', process.sharedMemory);
           _updateStatProperty(datastore, item, 'network', process.network);
-          console.debug(item.cpu);
         } else {
           //console.error("item is not datastore item:", item);
         }
