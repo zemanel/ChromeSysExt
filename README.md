@@ -29,4 +29,5 @@ http://archive.dojotoolkit.org/nightly/dojotoolkit/dojox/charting/tests/test_the
 
 Dojo datastore:
 
+http://docs.dojocampus.org/dojo/data/ItemFileWriteStore
 http://docs.dojocampus.org/dojo/data/ItemFileReadStore

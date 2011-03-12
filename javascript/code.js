@@ -1,62 +1,95 @@
-dojo.require("dojox.charting.Chart2D");
+dojo.require("dojo.data.ItemFileWriteStore");
+dojo.require("dojox.charting.DataChart");
 dojo.require("dojox.charting.themes.PlotKit.blue");
-dojo.require("dojo.data.ItemFileReadStore");
-dojo.require("dijit.form.Button");
-makeCharts = function(node) {
-                var chart1 = new dojox.charting.Chart2D(node);
-                
-                chart1.setTheme(dojox.charting.themes.PlotKit.blue);
-                
-                chart1.addPlot("default", {
-                    type: "Lines"
-                });
-                chart1.addAxis("x");
-                chart1.addAxis("y", {
-                    vertical: true
-                });
-                chart1.addSeries("Series 1", [1, 2, 2, 3, 4, 5, 5, 7]);
-                chart1.addSeries("Series 2", [11, 22, 22, 33, 44, 54, 54, 74]);
-                
-                chart1.render();
-            };
+dojo.require("dojox.charting.DataSeries");
+dojo.require("dojox.charting.axis2d.Default");
+dojo.require("dojox.charting.plot2d.Lines");
 
-/*
-chrome.experimental.processes.onUpdated.addListener(function(processes) {
-  console.debug(processes);
-});
-*/
+function debugDS(datastore) {
+  var kwArgs = {
+    query: {"processID":"*"},
+    onComplete:function(items){
+      console.debug(items);
+    }
+  };
+  datastore.fetch(kwArgs);
+}
 
-
-function getAllTabsInWindow() {
+// summary:
+//  Main bootstrap
+// callback: callback(tabsAndProcesses)
+function getAllTabsInWindow(datastore, callback) {
   // Get all tabs of the current window
   chrome.tabs.getAllInWindow(null, function(tabs){
-    //console.debug(tabs);
-    var tabList = {
+    // Iterate tabs to get process ID's
+    var c = 0; // count process id request callbacks
+    tabs.forEach(function(tab) {
+      // Get process ID for each tab
+      chrome.experimental.processes.getProcessIdForTab(tab.id, function(processId){
+        //console.log(tab.title, processId);
+        c++;
+        // add item to datastore; Chrome sometimes reports duplicate process Id's (?)
+        try {
+          datastore.newItem({
+            'processID'   : processId,
+            'tabTitle'    : tab.tabTitle,
+            'memory'      : [],
+            'cpu'         : [],
+            'network'     : []
+          });          
+        } catch(e) {
+          console.error("Error adding item", e);
+        }
+        // check for last getProcessIdForTab callback and execute callback param
+        if (tabs.length===c) {
+          callback();
+        }
+      });
+    });
+  });
+}
+// summary:
+//  initialize datastore and create charts
+function setupCharts(tabsAndProcesses) {
+  var initialData = {
+    'identifier': 'processID',
+    'idAttribute': 'processID',
+    'label': 'tabTitle',
+    'items': []
+  };
+  var datastore = new dojo.data.ItemFileWriteStore({data: initialData});
+  // fill datastore items
+  console.debug(tabsAndProcesses[0]);
+  for(var i=0; i<tabsAndProcesses.length; i++){
+    console.debug(tabsAndProcesses[i]);
+  }
+  
+  dojo.forEach(tabsAndProcesses, function(obj){
+    
+    datastore.newItem({
+      'processID'   : obj.processId,
+      'tabTitle'    : obj.tab.tabTitle,
+      'memory'      : [],
+      'cpu'         : [],
+      'network'     : []
+    });
+  });  
+}
+
+// summary:
+//  execute on page loaded
+dojo.ready(function() {
+  console.debug("--- ready ----");
+  var initialData = {
       'identifier': 'processID',
+      'idAttribute': 'processID',
       'label': 'tabTitle',
       'items': []
     };
-    // Iterate tabs to build data model
-    tabs.forEach(function(tab) {
-      // Get process for each tab and build initial data model
-      chrome.experimental.processes.getProcessIdForTab(tab.id, function(pid){
-          console.log(tab, pid);
-          tabList.items.push({
-            'processID': pid,
-            'tabTitle': tab.title,
-          });
-      });
-    });
-    console.debug(tabList);
+  var datastore = new dojo.data.ItemFileWriteStore({data: initialData});
+  //, setupCharts
+  getAllTabsInWindow(datastore, function(){
+    debugDS(datastore);  
   });
-}
-
-dojo.ready(function() {
-  makeCharts("simplechart");
-    makeCharts("simplechart2");
-      makeCharts("simplechart3");
-  console.debug("--- ready ----");
   
-  getAllTabsInWindow();
-
 });
