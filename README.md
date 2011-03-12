@@ -31,3 +31,7 @@ Dojo datastore:
 
 http://docs.dojocampus.org/dojo/data/ItemFileWriteStore
 http://docs.dojocampus.org/dojo/data/ItemFileReadStore
+
+CPU intensive:
+
+http://labs.flog.co.nz/raytracer/

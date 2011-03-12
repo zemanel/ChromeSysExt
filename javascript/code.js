@@ -51,11 +51,27 @@ function getAllTabsInWindow(datastore, callback) {
 // summary:
 //  initialize datastore and create charts
 function setupCharts(datastore) {
-  var cpuChart = new dojox.charting.DataChart("cpuChart",{
+  var memoryChart = new dojox.charting.DataChart("memoryChart",{
     //displayRange:20,
+    title: "Memory",
     yaxis: {to: 10, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true,natural:true},
     type: dojox.charting.plot2d.Lines
   }).setStore(datastore, {processID:"*"}, "memory");
+  
+  var cpuChart = new dojox.charting.DataChart("cpuChart",{
+    //displayRange:20,
+    title: "CPU",
+    yaxis: {to: 100, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true,natural:true},
+    type: dojox.charting.plot2d.Lines
+  }).setStore(datastore, {processID:"*"}, "cpu");
+  
+  var networkChart = new dojox.charting.DataChart("networkChart",{
+    //displayRange:20,
+    title: "Network",
+    yaxis: {to: 10, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true,natural:true},
+    type: dojox.charting.plot2d.Lines
+  }).setStore(datastore, {processID:"*"}, "network");
+  
 }
 
 // summary:
@@ -63,9 +79,10 @@ function setupCharts(datastore) {
 function _updateStatProperty(datastore, item, property, value) {
   var oldValue = datastore.getValues(item, property);
   oldValue.push(value);
-  newValue = oldValue.slice(0, 10);
+  //newValue = oldValue.slice(0, 10);
+  newValue = oldValue;
   console.dir(newValue);
-  datastore.setValues(item, property, newValue);
+  datastore.setValues(item, property, newValue);  
 }
 
 // summary:
