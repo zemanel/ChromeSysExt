@@ -1,10 +1,42 @@
-<script src="http://ajax.googleapis.com/ajax/libs/dojo/1.6/dojo/dojo.xd.js" type="text/javascript"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/dojo/1.6/dojo/dojo.xd.js" type="text/javascript" djConfig="parseOnLoad: true"></script>
+
 <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/dojo/1.6/dojo/resources/dojo.css"> 
 <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/dojo/1.6/dijit/themes/tundra/tundra.css">
+<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/dojo/1.6/dojox/grid/resources/tundraGrid.css">
 <link rel = "stylesheet" href = "/css/style.css"/>
 <script src = "/javascript/code.js"></script>
-<div id="privateMemoryChart" class="chart"></div>
-<div id="sharedMemoryChart" class="chart"></div>
-<div id="cpuChart" class="chart"></div>
-<div id="legend"></div>
-<div id="networkChart" class="chart"></div>
+
+<body class="tundra">
+
+  
+<div dojoType="dijit.layout.BorderContainer" design="sidebar" gutters="true" liveSplitters="true" id="borderContainer">
+    <div dojoType="dijit.layout.ContentPane" splitter="true" region="center">
+          <div dojoType="dijit.layout.TabContainer">
+              <!-- Charts -->
+              <div dojoType="dijit.layout.ContentPane" title="Resource charts" selected="true">
+                <div id="cpuChart" class="chart"></div>
+                <div id="privateMemoryChart" class="chart"></div>
+                <div id="sharedMemoryChart" class="chart"></div>
+                <div id="networkChart" class="chart"></div>
+                <div id="legend"></div>
+              </div>
+              <!-- Processes grid -->
+              <div dojoType="dijit.layout.ContentPane" title="Processes">
+                  <table  dojoType="dojox.grid.DataGrid" id="processesGrid" jsId="processesGrid">
+                    <thead>
+                      <tr>
+                        <th field="processId" width="auto">Process Id</th>
+                        <th field="CPU" width="auto">CPU</th>
+                        <th field="tabTitle" width="auto">Tab title</th>
+                        <th field="sharedMemory" width="auto">Shared memory</th>
+                        <th field="privateMemory" width="auto">Private Memory</th>
+                      </tr>
+                    </thead>
+                  </table>
+              </div>
+          </div>
+    </div>
+</div>
+  
+
+</body>

@@ -6,6 +6,13 @@ dojo.require("dojox.charting.axis2d.Default");
 dojo.require("dojox.charting.plot2d.Lines");
 dojo.require("dojox.charting.widget.Legend");
 
+dojo.require("dijit.form.Button");
+dojo.require("dijit.layout.TabContainer");
+dojo.require("dijit.layout.ContentPane");
+dojo.require("dijit.layout.BorderContainer");
+
+dojo.require("dojox.grid.DataGrid");
+
 function debugDS(datastore) {
   var kwArgs = {
     query: {"processID":"*"},
@@ -53,34 +60,36 @@ function getAllTabsInWindow(datastore, callback) {
 // summary:
 //  initialize datastore and create charts
 function setupCharts(datastore) {
-  var privateMemory = new dojox.charting.DataChart("privateMemoryChart",{
-    //displayRange:20,
-    title: "Private Memory",
-    yaxis: {to: 1, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true,natural:true},
-    type: dojox.charting.plot2d.Lines
-  }).setStore(datastore, {processID:"*"}, "privateMemory");
-  
-  var sharedMemory = new dojox.charting.DataChart("sharedMemoryChart",{
-    //displayRange:20,
-    title: "Shared Memory",
-    yaxis: {to: 1, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true,natural:true},
-    type: dojox.charting.plot2d.Lines
-  }).setStore(datastore, {processID:"*"}, "sharedMemory");
   
   var cpuChart = new dojox.charting.DataChart("cpuChart",{
     //displayRange:20,
     title: "CPU",
-    yaxis: {to: 1, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true,natural:true},
+    yaxis: {to: 100, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true, natural:false, minorTicks:false},
     type: dojox.charting.plot2d.Lines
   }).setStore(datastore, {processID:"*"}, "cpu");
   legend = new dojox.charting.widget.Legend({chart: cpuChart}, "legend");
   
-  var networkChart = new dojox.charting.DataChart("networkChart",{
+  var privateMemory = new dojox.charting.DataChart("privateMemoryChart",{
     //displayRange:20,
-    title: "Network",
-    yaxis: {to: 10, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true,natural:true},
+    title: "Private Memory",
+    yaxis: {to: 100000000, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true,natural:true, majorTickStep:10000000, minorTicks:false},
     type: dojox.charting.plot2d.Lines
-  }).setStore(datastore, {processID:"*"}, "network");
+  }).setStore(datastore, {processID:"*"}, "privateMemory");
+  
+//  var sharedMemory = new dojox.charting.DataChart("sharedMemoryChart",{
+//    //displayRange:20,
+//    title: "Shared Memory",
+//    yaxis: {to: 50000000, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true,natural:true},
+//    type: dojox.charting.plot2d.Lines
+//  }).setStore(datastore, {processID:"*"}, "sharedMemory");
+
+  
+//  var networkChart = new dojox.charting.DataChart("networkChart",{
+//    //displayRange:20,
+//    title: "Network",
+//    yaxis: {to: 10, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true,natural:true},
+//    type: dojox.charting.plot2d.Lines
+//  }).setStore(datastore, {processID:"*"}, "network");
   
 }
 
@@ -90,10 +99,11 @@ function _updateStatProperty(datastore, item, property, value) {
   var newValue, oldValue = datastore.getValues(item, property);
   oldValue.push(value);
   newValue = oldValue;
+  // Math.round(0.02809176312906632*100)/100
   if (newValue.length>10) {
     newValue.shift();
   }
-  console.dir(newValue);
+  console.log("Property:", property, newValue);
   datastore.setValues(item, property, newValue);  
 }
 
