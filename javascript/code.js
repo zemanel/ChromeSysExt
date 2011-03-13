@@ -40,7 +40,7 @@ function getAllTabsInWindow(datastore, callback) {
         try {
           datastore.newItem({
             'processID'     : processId,
-            'tabTitle'      : tab.tabTitle,
+            'tabTitle'      : tab.title,
             'privateMemory' : [],
             'sharedMemory'  : [],
             'cpu'           : [],
@@ -138,6 +138,9 @@ function _onUpdated(processes) {
           _updateStatProperty(datastore, item, 'privateMemory', privateMemory);
           _updateStatProperty(datastore, item, 'sharedMemory', sharedMemory);
           _updateStatProperty(datastore, item, 'network', network);
+          
+          //debugDS(datastore);
+          
         } else {
           //console.error("item is not datastore item:", item);
         }
@@ -164,7 +167,7 @@ dojo.ready(function() {
   datastore = new dojo.data.ItemFileWriteStore({data: initialData});
   //, setupCharts
   getAllTabsInWindow(datastore, function(){
-    //debugDS(datastore);
+    debugDS(datastore);
 
     // Setup the charts
     setupCharts(datastore);
