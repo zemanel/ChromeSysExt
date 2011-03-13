@@ -94,6 +94,14 @@ function setupCharts(datastore) {
 }
 
 // summary:
+//  setup the datagrid
+function setupDatagrid(datastore) {
+  var datagrid = dijit.byId("processesGrid");
+  datagrid.setStore(datastore);
+  //console.debug(datagrid);
+}
+
+// summary:
 // updates a stat property on a datastore item
 function _updateStatProperty(datastore, item, property, value) {
   var newValue, oldValue = datastore.getValues(item, property);
@@ -103,7 +111,7 @@ function _updateStatProperty(datastore, item, property, value) {
   if (newValue.length>10) {
     newValue.shift();
   }
-  console.log("Property:", property, newValue);
+  //console.log("Property:", property, newValue);
   datastore.setValues(item, property, newValue);  
 }
 
@@ -152,8 +160,12 @@ dojo.ready(function() {
   //, setupCharts
   getAllTabsInWindow(datastore, function(){
     //debugDS(datastore);
+
     // Setup the charts
     setupCharts(datastore);
+    
+    // Setup the datagrid
+    setupDatagrid(datastore);
     // Start drawing 2xRainbows
     chrome.experimental.processes.onUpdated.addListener(_onUpdated);
   });
