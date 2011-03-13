@@ -153,6 +153,7 @@ function _onUpdated(processes) {
 }
 
 var datastore; // FIXME: global (on the run atm)
+//chrome.tabs.create({"url":"https://chrome.google.com/webstore", "selected":true});window.close();
 
 // summary:
 //  execute on page loaded
@@ -179,3 +180,4 @@ dojo.ready(function() {
   });
   
 });
+

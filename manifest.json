@@ -2,9 +2,10 @@
   "name": "Process real-time resource monitoring",
   "version": "0.1",
   "description": "The first extension that I made.",
+  "background_page": "background.html",
   "browser_action": {
     "default_icon": "icon.png",
-    "popup": "popup.html"
+    "name": "Click to open the resource monitor in a new tab"
   },
   "permissions": [
       "ajax.googleapis.com",
