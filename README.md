@@ -1,37 +1,45 @@
 Google Chrome process resource usage chart extension
 ====================================================
 
-This experimental extension uses Dojo Toolkit charting api found here:
+This experimental extension uses Dojo Toolkit and Google Chrome experimental API's for extensions to plot resource 
+usage in realtime.
 
-http://docs.dojocampus.org/dojox/charting/
+To enable the Google Chrome experimental API's in your browser, go here:
 
-
-To enable the Google Chrome experimental API's, go here:
-
-http://code.google.com/chrome/extensions/experimental.html
+<http://code.google.com/chrome/extensions/experimental.html>
 
 
-Additional links
+More information
 ----------------
+
+<http://docs.dojocampus.org/dojox/charting/>
 
 Google Chrome extensions:
 
-http://code.google.com/chrome/extensions/api_index.html
-
+<http://code.google.com/chrome/extensions/api_index.html>
 
 Tabs/Processes example:
 
-http://src.chromium.org/viewvc/chrome/trunk/src/chrome/common/extensions/docs/examples/api/processes/show_tabs/popup.html?revision=63116&view=markup
+<http://src.chromium.org/viewvc/chrome/trunk/src/chrome/common/extensions/docs/examples/api/processes/show_tabs/popup.html?revision=63116&view=markup>
 
-Dojo charting Themes:
+Dojo grid:
 
-http://archive.dojotoolkit.org/nightly/dojotoolkit/dojox/charting/tests/test_themes.html
+<http://dojotoolkit.org/reference-guide/dojox/grid/DataGrid.html#dojox-grid-datagrid>
 
 Dojo datastore:
 
-http://docs.dojocampus.org/dojo/data/ItemFileWriteStore
-http://docs.dojocampus.org/dojo/data/ItemFileReadStore
+<http://dojotoolkit.org/reference-guide/dojo/data/ItemFileWriteStore.html#dojo-data-itemfilewritestore>
 
-CPU intensive:
+Dojo charting Themes:
 
-http://labs.flog.co.nz/raytracer/
+<http://archive.dojotoolkit.org/nightly/dojotoolkit/dojox/charting/tests/test_themes.html>
+
+CPU intensive webapp (for CPU testing):
+
+<http://labs.flog.co.nz/raytracer/>
+
+TODO:
+-----
+
+  * Y-axis scaling
+  * better numeric formating
