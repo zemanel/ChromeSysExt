@@ -39,12 +39,12 @@ function getAllTabsInWindow(datastore, callback) {
         // add item to datastore; Chrome sometimes reports duplicate process Id's (?)
         try {
           datastore.newItem({
-            'processID'   : processId,
-            'tabTitle'    : tab.tabTitle,
-            'privateMemory'      : [],
-            'sharedMemory'      : [],
-            'cpu'         : [],
-            'network'     : []
+            'processID'     : processId,
+            'tabTitle'      : tab.tabTitle,
+            'privateMemory' : [],
+            'sharedMemory'  : [],
+            'cpu'           : [],
+            'network'       : []
           });          
         } catch(e) {
           console.error("Error adding item", e);
@@ -129,10 +129,15 @@ function _onUpdated(processes) {
       onItem: function(item) {
         if(datastore.isItem(item)){
           //console.debug("Got item", item);
-          _updateStatProperty(datastore, item, 'cpu', process.cpu);
-          _updateStatProperty(datastore, item, 'privateMemory', process.privateMemory);
-          _updateStatProperty(datastore, item, 'sharedMemory', process.sharedMemory);
-          _updateStatProperty(datastore, item, 'network', process.network);
+          var cpu = Math.round(process.cpu*1000)/1000; // float, 0-100
+          var privateMemory = process.privateMemory; // bytes
+          var sharedMemory =  process.sharedMemory;  // bytes
+          var network = process.network; // bytes
+          
+          _updateStatProperty(datastore, item, 'cpu', cpu);
+          _updateStatProperty(datastore, item, 'privateMemory', privateMemory);
+          _updateStatProperty(datastore, item, 'sharedMemory', sharedMemory);
+          _updateStatProperty(datastore, item, 'network', network);
         } else {
           //console.error("item is not datastore item:", item);
         }
