@@ -67,60 +67,59 @@ function getAllTabsInWindow(datastore, callback) {
 //  initialize datastore and create charts
 function setupCharts(datastore) {
   var theme = dojox.charting.themes.Claro;
-  var theme = dojox.charting.themes.Julie;
+//  var theme = dojox.charting.themes.Julie;
+//  var theme = dojox.charting.themes.PlotKit.blue;
   
   var gridOptions = {
       //stroke:    {width: 2.5, color:"#fff"}
       //shadows: {dx: 2, dy: 2}
-      majorTick: { stroke: "gray", length: 1 },
-      minorTick: { stroke: "gray", length: 1 }
+      type: "Grid",
+      axis: {stroke : {color: "red", width: 1}}
+      //majorTick: {width: 1 },
+      //stroke:    {color:"#fff", width:1}
   }; // for grid
   
   var cpuChart = new dojox.charting.DataChart("cpuChart",{
     displayRange: MAX_TICKS,
     title: "CPU",
-    /*
-    titleFont: "normal normal normal 10pt Arial",
-    titleOrientation: "axis",
-    rotation:45,
-    */
+    titleFont: "normal normal bold 10pt Tahoma",
     chartTheme: theme,
     stretchToFit: false,
-    chartPlot: gridOptions,
-    
-    yaxis: {to: 100, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true, natural:false, minorTicks:false},
+    grid: gridOptions,
+    yaxis: {to: 100, vertical: true, fixLower: "major", fixUpper: "major", includeZero: false, natural:false, minorTicks:false, majorTicks: {line: {color: "red", length: 8}}},
     type: dojox.charting.plot2d.Lines
-  }).setStore(datastore, {processID:"*"}, "cpu");
-  
-//  var legend = new dojox.charting.widget.Legend({chart: cpuChart, horizontal:false}, "legend");
-//  legend.series = cpuChart.seriesData();
-//  legend.refresh();
-  
-  var privateMemory = new dojox.charting.DataChart("privateMemoryChart",{
+  });
+  cpuChart.setStore(datastore, {processID:"*"}, "cpu");
+
+  var privateMemoryChart = new dojox.charting.DataChart("privateMemoryChart",{
     displayRange: MAX_TICKS,
     title: "Private Memory",
+    titleFont: "normal normal bold 10pt Tahoma",
     chartTheme: theme,
-    yaxis: {to: 100000000, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true,natural:true, majorTickStep:10000000, minorTicks:false},
+    yaxis: {to: 100000000, vertical: true, fixLower: "major", fixUpper: "major", includeZero: false,natural:true, majorTickStep:10000000, minorTicks:false},
     type: dojox.charting.plot2d.Lines
-  }).setStore(datastore, {processID:"*"}, "privateMemory");
+  });
+  privateMemoryChart.setStore(datastore, {processID:"*"}, "privateMemory");
   
-  var sharedMemory = new dojox.charting.DataChart("sharedMemoryChart",{
+  var sharedMemoryChart = new dojox.charting.DataChart("sharedMemoryChart",{
     displayRange: MAX_TICKS,
     title: "Shared Memory",
+    titleFont: "normal normal bold 10pt Tahoma",
     chartTheme: theme,
-    yaxis: {to: 100000000, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true,natural:true, majorTickStep:10000000, minorTicks:false},
+    yaxis: {to: 100000000, vertical: true, fixLower: "major", fixUpper: "major", includeZero: false,natural:true, majorTickStep:10000000, minorTicks:false},
     type: dojox.charting.plot2d.Lines
-  }).setStore(datastore, {processID:"*"}, "sharedMemory");
-
+  });
+  sharedMemoryChart.setStore(datastore, {processID:"*"}, "sharedMemory");
   
   var networkChart = new dojox.charting.DataChart("networkChart",{
     displayRange: MAX_TICKS,
     title: "Network",
+    titleFont: "normal normal bold 10pt Tahoma",
     chartTheme: theme,
     yaxis: {to: 100000000, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true,natural:true, majorTickStep:10000000, minorTicks:false},
     type: dojox.charting.plot2d.Lines
-  }).setStore(datastore, {processID:"*"}, "network");
-  
+  });
+  networkChart.setStore(datastore, {processID:"*"}, "network");
 }
 
 // summary:

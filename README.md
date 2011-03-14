@@ -12,8 +12,6 @@ To enable the Google Chrome experimental API's in your browser, go here:
 More information
 ----------------
 
-<http://docs.dojocampus.org/dojox/charting/>
-
 Google Chrome extensions:
 
 <http://code.google.com/chrome/extensions/api_index.html>
@@ -30,7 +28,9 @@ Dojo datastore:
 
 <http://dojotoolkit.org/reference-guide/dojo/data/ItemFileWriteStore.html#dojo-data-itemfilewritestore>
 
-Dojo charting Themes:
+Dojo charting:
+
+<http://dojotoolkit.org/reference-guide/dojox/charting.html#dojox-charting>
 
 <http://archive.dojotoolkit.org/nightly/dojotoolkit/dojox/charting/tests/test_themes.html>
 
