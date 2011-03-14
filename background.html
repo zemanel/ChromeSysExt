@@ -4,8 +4,10 @@
     //var _opened = false;
     chrome.browserAction.onClicked.addListener(function(tab) {
       //if (false==_opened) {
+        var ui_url = chrome.extension.getURL("ui.html");
         chrome.tabs.create({
-          url: "chrome-extension://mahghoafolmnilkbnkikhcomdechfbjg/ui.html",
+          url: ui_url,
+          //url: "chrome-extension://mahghoafolmnilkbnkikhcomdechfbjg/ui.html",
           selected: true
         });
         //_opened=true;
