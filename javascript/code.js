@@ -1,6 +1,10 @@
 dojo.require("dojo.data.ItemFileWriteStore");
 dojo.require("dojox.charting.DataChart");
+
 dojo.require("dojox.charting.themes.PlotKit.blue");
+dojo.require("dojox.charting.themes.Claro");
+dojo.require("dojox.charting.themes.Julie");
+
 dojo.require("dojox.charting.DataSeries");
 dojo.require("dojox.charting.axis2d.Default");
 dojo.require("dojox.charting.plot2d.Lines");
@@ -12,6 +16,8 @@ dojo.require("dijit.layout.ContentPane");
 dojo.require("dijit.layout.BorderContainer");
 
 dojo.require("dojox.grid.DataGrid");
+
+var MAX_TICKS = 50; // Maximum tick item history
 
 function debugDS(datastore) {
   var kwArgs = {
@@ -60,36 +66,60 @@ function getAllTabsInWindow(datastore, callback) {
 // summary:
 //  initialize datastore and create charts
 function setupCharts(datastore) {
+  var theme = dojox.charting.themes.Claro;
+  var theme = dojox.charting.themes.Julie;
+  
+  var gridOptions = {
+      //stroke:    {width: 2.5, color:"#fff"}
+      //shadows: {dx: 2, dy: 2}
+      majorTick: { stroke: "gray", length: 1 },
+      minorTick: { stroke: "gray", length: 1 }
+  }; // for grid
   
   var cpuChart = new dojox.charting.DataChart("cpuChart",{
-    //displayRange:20,
+    displayRange: MAX_TICKS,
     title: "CPU",
+    /*
+    titleFont: "normal normal normal 10pt Arial",
+    titleOrientation: "axis",
+    rotation:45,
+    */
+    chartTheme: theme,
+    stretchToFit: false,
+    chartPlot: gridOptions,
+    
     yaxis: {to: 100, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true, natural:false, minorTicks:false},
     type: dojox.charting.plot2d.Lines
   }).setStore(datastore, {processID:"*"}, "cpu");
-  legend = new dojox.charting.widget.Legend({chart: cpuChart}, "legend");
+  
+//  var legend = new dojox.charting.widget.Legend({chart: cpuChart, horizontal:false}, "legend");
+//  legend.series = cpuChart.seriesData();
+//  legend.refresh();
   
   var privateMemory = new dojox.charting.DataChart("privateMemoryChart",{
-    //displayRange:20,
+    displayRange: MAX_TICKS,
     title: "Private Memory",
+    chartTheme: theme,
     yaxis: {to: 100000000, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true,natural:true, majorTickStep:10000000, minorTicks:false},
     type: dojox.charting.plot2d.Lines
   }).setStore(datastore, {processID:"*"}, "privateMemory");
   
-//  var sharedMemory = new dojox.charting.DataChart("sharedMemoryChart",{
-//    //displayRange:20,
-//    title: "Shared Memory",
-//    yaxis: {to: 50000000, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true,natural:true},
-//    type: dojox.charting.plot2d.Lines
-//  }).setStore(datastore, {processID:"*"}, "sharedMemory");
+  var sharedMemory = new dojox.charting.DataChart("sharedMemoryChart",{
+    displayRange: MAX_TICKS,
+    title: "Shared Memory",
+    chartTheme: theme,
+    yaxis: {to: 100000000, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true,natural:true, majorTickStep:10000000, minorTicks:false},
+    type: dojox.charting.plot2d.Lines
+  }).setStore(datastore, {processID:"*"}, "sharedMemory");
 
   
-//  var networkChart = new dojox.charting.DataChart("networkChart",{
-//    //displayRange:20,
-//    title: "Network",
-//    yaxis: {to: 10, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true,natural:true},
-//    type: dojox.charting.plot2d.Lines
-//  }).setStore(datastore, {processID:"*"}, "network");
+  var networkChart = new dojox.charting.DataChart("networkChart",{
+    displayRange: MAX_TICKS,
+    title: "Network",
+    chartTheme: theme,
+    yaxis: {to: 100000000, vertical: true, fixLower: "major", fixUpper: "major", includeZero: true,natural:true, majorTickStep:10000000, minorTicks:false},
+    type: dojox.charting.plot2d.Lines
+  }).setStore(datastore, {processID:"*"}, "network");
   
 }
 
@@ -108,7 +138,7 @@ function _updateStatProperty(datastore, item, property, value) {
   oldValue.push(value);
   newValue = oldValue;
   // Math.round(0.02809176312906632*100)/100
-  if (newValue.length>10) {
+  if (newValue.length>MAX_TICKS) {
     newValue.shift();
   }
   //console.log("Property:", property, newValue);
