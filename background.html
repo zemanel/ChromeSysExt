@@ -1,15 +1,15 @@
 <html>
   <head>
     <script>
-    var _opened = false;
+    //var _opened = false;
     chrome.browserAction.onClicked.addListener(function(tab) {
-      if (false==_opened) {
+      //if (false==_opened) {
         chrome.tabs.create({
           url: "chrome-extension://mahghoafolmnilkbnkikhcomdechfbjg/ui.html",
           selected: true
         });
-        _opened=true;
-      }
+        //_opened=true;
+      //}
     });
     </script>
   </head>
